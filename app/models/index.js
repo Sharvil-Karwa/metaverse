@@ -1,6 +1,5 @@
 const config = require("../config/db.config.js");
 const Sequelize = require("sequelize");
-
 const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
   host: config.HOST,
   dialect: config.dialect,
@@ -27,14 +26,16 @@ db.user.belongsToMany(db.room, {
   through: "userRoom",
 });
 
-// db.avatar.belongsToMany(db.user, {
-//   through: "userAvatar",
-// });
-// db.user.belongsToMany(db.avatar, {
-//   through: "userAvatar",
-// });
+db.avatar.belongsToMany(db.user, {
+  through: "userAvatar",
+});
+db.user.belongsToMany(db.avatar, {
+  through: "userAvatar",
+});
 
-db.user.hasMany(db.avatar);
-db.avatar.belongsTo(db.user);
+// db.user.hasMany(db.player);
+// db.player.belongsTo(db.user);
+
+module.exports = db;
 
 module.exports = db;

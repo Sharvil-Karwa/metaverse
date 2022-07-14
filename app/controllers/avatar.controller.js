@@ -6,7 +6,6 @@ exports.createAvatar = (req, res) => {
     .create({
       name: req.body.name,
       description: req.body.description,
-      userId: req.body.userId,
     })
     .then((avatar) => {
       res.send(avatar);
