@@ -81,7 +81,23 @@ const createAvatar = (req, res) => {
     });
 };
 
+const deleteAvatar = (req, res) => {
+  let avatarId = req.params.avatarId;
+  Avatar.destroy({
+    where: {
+      id: avatarId,
+    },
+  })
+    .then((avatar) => {
+      res.send("Avatar deleted successfully");
+    })
+    .catch((err) => {
+      res.send(err);
+    });
+};
+
 module.exports = {
   avatarInfo,
   createAvatar,
+  deleteAvatar,
 };

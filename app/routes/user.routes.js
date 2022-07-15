@@ -23,6 +23,7 @@ module.exports = (app) => {
     authJwt.verifyToken,
     avatar.createAvatar
   ); // to create avatar and add it to user and room
+  router.delete("/avatar/:avatarId", authJwt.verifyToken, avatar.deleteAvatar); // to delete avatar (i.e when room's admin removes the avatar from the room)
 
   router.get("/room/:roomId", authJwt.verifyToken, room.roomInfo); // to get room info
   router.post("/user/:userId/room", authJwt.verifyToken, room.createRoom); // to create room and add it to user
