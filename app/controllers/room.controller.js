@@ -3,7 +3,7 @@ const User = db.user;
 const Room = db.room;
 const Avatar = db.avatar;
 
-exports.roomInfo = (req, res) => {
+const roomInfo = (req, res) => {
   let roomId = req.params.roomId;
 
   Room.findOne({
@@ -29,7 +29,7 @@ exports.roomInfo = (req, res) => {
     });
 };
 
-exports.createRoom = (req, res) => {
+const createRoom = (req, res) => {
   let userId = req.params.userId;
 
   Room.create({
@@ -52,4 +52,9 @@ exports.createRoom = (req, res) => {
     .catch((err) => {
       res.send(err);
     });
+};
+
+module.exports = {
+  roomInfo,
+  createRoom,
 };

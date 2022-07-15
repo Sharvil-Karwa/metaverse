@@ -3,7 +3,7 @@ const User = db.user;
 const Room = db.room;
 const Avatar = db.avatar;
 
-exports.getAllUsers = (req, res) => {
+const getAllUsers = (req, res) => {
   User.findAll()
     .then((users) => {
       res.send(users);
@@ -15,7 +15,7 @@ exports.getAllUsers = (req, res) => {
     });
 };
 
-exports.userInfo = (req, res) => {
+const userInfo = (req, res) => {
   User.findOne({
     where: {
       id: req.params.userId,
@@ -47,4 +47,9 @@ exports.userInfo = (req, res) => {
         message: err.message || "Some error occurred while retrieving user.",
       });
     });
+};
+
+module.exports = {
+  getAllUsers,
+  userInfo,
 };

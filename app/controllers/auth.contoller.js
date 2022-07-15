@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
-exports.signup = (req, res) => {
+const signup = (req, res) => {
   User.create({
     username: req.body.username,
     email: req.body.email,
@@ -20,7 +20,7 @@ exports.signup = (req, res) => {
       res.status(500).send({ message: err.message });
     });
 };
-exports.signin = (req, res) => {
+const signin = (req, res) => {
   if (req.body.username == null) {
     return res.status(400).send({ message: "Username is required" });
   }
@@ -49,4 +49,9 @@ exports.signin = (req, res) => {
       user: user,
     });
   });
+};
+
+module.exports = {
+  signup,
+  signin,
 };

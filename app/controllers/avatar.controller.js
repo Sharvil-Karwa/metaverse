@@ -3,7 +3,7 @@ const User = db.user;
 const Room = db.room;
 const Avatar = db.avatar;
 
-exports.avatarInfo = (req, res) => {
+const avatarInfo = (req, res) => {
   let avatarId = req.params.avatarId;
 
   Avatar.findOne({
@@ -12,14 +12,38 @@ exports.avatarInfo = (req, res) => {
     },
   })
     .then((avatar) => {
-      res.send(avatar);
+      User.findOne({
+        where: {
+          id: avatar.userId,
+        },
+      })
+        .then((user) => {
+          Room.findOne({
+            where: {
+              id: avatar.roomId,
+            },
+          })
+            .then((room) => {
+              res.send({
+                avatar,
+                user,
+                room,
+              });
+            })
+            .catch((err) => {
+              res.send(err);
+            });
+        })
+        .catch((err) => {
+          res.send(err);
+        });
     })
     .catch((err) => {
       res.send(err);
     });
 };
 
-exports.createAvatar = (req, res) => {
+const createAvatar = (req, res) => {
   let userId = req.params.userId;
   let roomId = req.params.roomId;
 
@@ -55,4 +79,9 @@ exports.createAvatar = (req, res) => {
     .catch((err) => {
       res.send(err);
     });
+};
+
+module.exports = {
+  avatarInfo,
+  createAvatar,
 };
