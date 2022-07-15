@@ -4,6 +4,7 @@ const User = db.user;
 const Op = db.Sequelize.Op;
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+
 exports.signup = (req, res) => {
   User.create({
     username: req.body.username,
@@ -20,6 +21,10 @@ exports.signup = (req, res) => {
     });
 };
 exports.signin = (req, res) => {
+  if (req.body.username == null) {
+    return res.status(400).send({ message: "Username is required" });
+  }
+
   User.findOne({
     where: {
       username: req.body.username,

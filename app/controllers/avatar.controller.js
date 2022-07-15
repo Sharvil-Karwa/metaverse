@@ -1,12 +1,16 @@
 const db = require("../models/index.js");
-const avatar = db.avatar;
+const User = db.user;
+const Room = db.room;
+const Avatar = db.avatar;
 
-exports.createAvatar = (req, res) => {
-  avatar
-    .create({
-      name: req.body.name,
-      description: req.body.description,
-    })
+exports.avatarInfo = (req, res) => {
+  let avatarId = req.params.avatarId;
+
+  Avatar.findOne({
+    where: {
+      id: avatarId,
+    },
+  })
     .then((avatar) => {
       res.send(avatar);
     })
@@ -15,17 +19,38 @@ exports.createAvatar = (req, res) => {
     });
 };
 
-exports.avatarInfo = (req, res) => {
-  let avatarId = req.params.avatarId;
+exports.createAvatar = (req, res) => {
+  let userId = req.params.userId;
+  let roomId = req.params.roomId;
 
-  avatar
-    .findOne({
-      where: {
-        id: avatarId,
-      },
-    })
+  Avatar.create({
+    name: req.body.name,
+    description: req.body.description,
+  })
     .then((avatar) => {
-      res.send(avatar);
+      User.findOne({
+        where: {
+          id: userId,
+        },
+      })
+        .then((user) => {
+          Room.findOne({
+            where: {
+              id: roomId,
+            },
+          })
+            .then((room) => {
+              user.addAvatar(avatar);
+              room.addAvatar(avatar);
+              res.send(avatar);
+            })
+            .catch((err) => {
+              res.send(err);
+            });
+        })
+        .catch((err) => {
+          res.send(err);
+        });
     })
     .catch((err) => {
       res.send(err);

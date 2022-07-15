@@ -1,30 +1,26 @@
 const db = require("../models/index.js");
-const user = db.user;
+const User = db.user;
+const Room = db.room;
+const Avatar = db.avatar;
 
-exports.createUser = (req, res) => {
-  user
-    .create({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-    })
-    .then((user) => {
-      res.send(user);
+exports.getAllUsers = (req, res) => {
+  User.findAll()
+    .then((users) => {
+      res.send(users);
     })
     .catch((err) => {
-      res.send(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving users.",
+      });
     });
 };
 
 exports.userInfo = (req, res) => {
-  let userId = req.params.userId;
-
-  user
-    .findOne({
-      where: {
-        id: userId,
-      },
-    })
+  User.findOne({
+    where: {
+      id: req.params.userId,
+    },
+  })
     .then((user) => {
       user
         .getRooms()
@@ -33,9 +29,9 @@ exports.userInfo = (req, res) => {
             .getAvatars()
             .then((avatars) => {
               res.send({
-                user: user,
-                rooms: rooms,
-                avatars: avatars,
+                user,
+                rooms,
+                avatars,
               });
             })
             .catch((err) => {
@@ -45,24 +41,10 @@ exports.userInfo = (req, res) => {
         .catch((err) => {
           res.send(err);
         });
-    });
-};
-
-exports.addAvatarToUser = (req, res) => {
-  let userId = req.params.userId;
-  let avatarId = req.params.avatarId;
-
-  user
-    .findOne({
-      where: {
-        id: userId,
-      },
-    })
-    .then((user) => {
-      user.addAvatar(avatarId);
-      res.send(user);
     })
     .catch((err) => {
-      res.send(err);
+      res.status(500).send({
+        message: err.message || "Some error occurred while retrieving user.",
+      });
     });
 };

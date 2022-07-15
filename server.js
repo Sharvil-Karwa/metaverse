@@ -15,7 +15,9 @@ require("./app/routes/user.routes")(app);
 
 const db = require("./app/models");
 db.sequelize
-  .sync()
+  .sync({
+    force: false,
+  })
   .then(() => {
     console.log("Synced db.");
   })

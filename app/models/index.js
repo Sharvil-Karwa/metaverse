@@ -19,23 +19,13 @@ db.user = require("../models/user.model.js")(sequelize, Sequelize);
 db.room = require("../models/room.model.js")(sequelize, Sequelize);
 db.avatar = require("../models/avatar.model.js")(sequelize, Sequelize);
 
-db.room.belongsToMany(db.user, {
-  through: "userRoom",
-});
-db.user.belongsToMany(db.room, {
-  through: "userRoom",
-});
+db.user.hasMany(db.avatar);
+db.user.hasMany(db.room);
+db.room.hasMany(db.avatar);
 
-db.avatar.belongsToMany(db.user, {
-  through: "userAvatar",
-});
-db.user.belongsToMany(db.avatar, {
-  through: "userAvatar",
-});
+// db.avatar.belongsTo(db.user);
 
 // db.user.hasMany(db.player);
 // db.player.belongsTo(db.user);
-
-module.exports = db;
 
 module.exports = db;

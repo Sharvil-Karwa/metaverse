@@ -14,16 +14,18 @@ module.exports = (app) => {
     next();
   });
 
-  router.get("/user/:userId", user.userInfo);
-  router.post("/user", user.createUser);
-  router.post("/user/:userId/avatar/:avatarId", user.addAvatarToUser);
+  router.get("/allUsers", authJwt.verifyToken, user.getAllUsers); // to get all users
+  router.get("/user/:userId", authJwt.verifyToken, user.userInfo); // to get user info
 
-  router.get("/room/:roomId", room.roomInfo);
-  router.post("/room", room.createRoom);
-  router.post("/room/:roomId/user/:userId", room.addUserToRoom);
+  router.get("/avatar/:avatarId", authJwt.verifyToken, avatar.avatarInfo); // to get avatar info
+  router.post(
+    "/user/:userId/room/:roomId/avatar",
+    authJwt.verifyToken,
+    avatar.createAvatar
+  ); // to create avatar and add it to user and room
 
-  router.get("/avatar/:avatarId", avatar.avatarInfo);
-  router.post("/avatar", avatar.createAvatar);
+  router.get("/room/:roomId", authJwt.verifyToken, room.roomInfo); // to get room info
+  router.post("/user/:userId/room", authJwt.verifyToken, room.createRoom); // to create room and add it to user
 
   app.use("/api", router);
 };
