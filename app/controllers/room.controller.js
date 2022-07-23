@@ -3,55 +3,49 @@ const User = db.user;
 const Room = db.room;
 const Avatar = db.avatar;
 
-const roomInfo = (req, res) => {
+const roomInfo = async (req, res) => {
   let roomId = req.params.roomId;
 
-  Room.findOne({
+  const room = await Room.findOne({
     where: {
       id: roomId,
     },
-  })
-    .then((room) => {
-      room
-        .getAvatars()
-        .then((avatars) => {
-          res.send({
-            room,
-            avatars,
-          });
-        })
-        .catch((err) => {
-          res.send(err);
-        });
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  });
+
+  const avatars = await room.getAvatars();
+
+  const user = await User.findOne({
+    where: {
+      id: room.userId,
+    },
+  });
+
+  res.send({
+    room: room,
+    owner: user,
+    avatars: avatars,
+  });
 };
 
-const createRoom = (req, res) => {
+const createRoom = async (req, res) => {
   let userId = req.params.userId;
 
-  Room.create({
+  const room = await Room.create({
     roomname: req.body.roomname,
-  })
-    .then((room) => {
-      User.findOne({
-        where: {
-          id: userId,
-        },
-      })
-        .then((user) => {
-          user.addRoom(room);
-          res.send(room);
-        })
-        .catch((err) => {
-          res.send(err);
-        });
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  });
+
+  const user = await User.findOne({
+    where: {
+      id: userId,
+    },
+  });
+
+  user.addRoom(room);
+
+  res.send({
+    room: room,
+    owner: user,
+  });
 };
 
 module.exports = {

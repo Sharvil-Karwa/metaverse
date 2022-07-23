@@ -3,50 +3,26 @@ const User = db.user;
 const Room = db.room;
 const Avatar = db.avatar;
 
-const getAllUsers = (req, res) => {
-  User.findAll()
-    .then((users) => {
-      res.send(users);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving users.",
-      });
-    });
+const getAllUsers = async (req, res) => {
+  const users = await User.findAll();
+  res.send(users);
 };
 
-const userInfo = (req, res) => {
-  User.findOne({
+const userInfo = async (req, res) => {
+  const user = await User.findOne({
     where: {
       id: req.params.userId,
     },
-  })
-    .then((user) => {
-      user
-        .getRooms()
-        .then((rooms) => {
-          user
-            .getAvatars()
-            .then((avatars) => {
-              res.send({
-                user,
-                rooms,
-                avatars,
-              });
-            })
-            .catch((err) => {
-              res.send(err);
-            });
-        })
-        .catch((err) => {
-          res.send(err);
-        });
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving user.",
-      });
-    });
+  });
+
+  const rooms = await user.getRooms();
+  const avatars = await user.getAvatars();
+
+  res.send({
+    user: user,
+    rooms: rooms,
+    avatars: avatars,
+  });
 };
 
 module.exports = {
