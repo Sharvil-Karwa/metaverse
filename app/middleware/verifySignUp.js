@@ -29,6 +29,6 @@ checkDuplicateUsernameOrEmail = async (req, res, next) => {
 };
 
 const verifySignUp = {
-  checkDuplicateUsernameOrEmail: checkDuplicateUsernameOrEmail,
+  checkDuplicateUsernameOrEmail,
 };
 module.exports = verifySignUp;

@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // routes
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/agoraToken.routes")(app);
 
 const db = require("./app/models");
 db.sequelize
