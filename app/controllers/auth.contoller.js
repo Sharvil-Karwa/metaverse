@@ -43,12 +43,67 @@ const signin = async (req, res) => {
     var token = jwt.sign({ id: user.id }, config.secret, {
       expiresIn: 86400,
     });
+    const refreshToken = jwt.sign(
+      {
+        username: userCredentials.username,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
 
-    res.status(200).send({ auth: true, token: token, user: user });
+    // Assigning refresh token in http-only cookie
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).send({
+      auth: true,
+      token: token,
+      user: user,
+      refreshToken: refreshToken,
+    });
   });
+};
+
+const refresh = async (req, res) => {
+  if (req.cookies?.jwt) {
+    // Destructuring refreshToken from cookie
+    const refreshToken = req.cookies.jwt;
+
+    // Verifying refresh token
+    jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          // Wrong Refesh Token
+          return res.status(406).json({ message: "Unauthorized" });
+        } else {
+          // Correct token we send a new access token
+          const accessToken = jwt.sign(
+            {
+              username: userCredentials.username,
+              email: userCredentials.email,
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            {
+              expiresIn: "10m",
+            }
+          );
+          return res.json({ accessToken });
+        }
+      }
+    );
+  } else {
+    return res.status(406).json({ message: "Unauthorized" });
+  }
 };
 
 module.exports = {
   signup,
   signin,
+  refresh,
 };
