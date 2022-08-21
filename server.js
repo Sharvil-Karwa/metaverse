@@ -3,10 +3,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-var corsOptions = {
-  origin: process.env.HOST,
-};
-app.use(cors(corsOptions));
+// var corsOptions = {
+//   origin: process.env.HOST,
+// };
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
