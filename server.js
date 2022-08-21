@@ -3,6 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
+const config = require("./app/config/db.config.js");
+console.log(config);
 // var corsOptions = {
 //   origin: process.env.HOST,
 // };
@@ -25,7 +27,7 @@ db.sequelize
     console.log("Failed to sync db: " + err.message);
   });
 
-// const PORT = process.env.PORT || 8080;
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}.`);
-// });
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});

@@ -4,8 +4,12 @@ const Room = db.room;
 const Avatar = db.avatar;
 
 const getAllUsers = async (req, res) => {
-  const users = await User.findAll();
-  res.send(users);
+  try {
+    const users = await User.findAll();
+    res.send(users);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const userInfo = async (req, res) => {
