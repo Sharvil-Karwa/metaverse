@@ -1,33 +1,37 @@
-require("dotenv").config();
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const app = express();
-const config = require("./app/config/db.config.js");
-console.log(config);
-// var corsOptions = {
-//   origin: process.env.HOST,
-// };
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const app = require("./app");
+const dotenv = require("dotenv");
 
-// routes
-require("./app/routes/auth.routes")(app);
-require("./app/routes/user.routes")(app);
-require("./app/routes/agoraToken.routes")(app);
+process.on("uncaughtException", (err) => {
+  console.log(`ERROR: ${err.message}`);
+  console.log("Shutting down due to uncaughtException");
+  process.exit(1);
+});
 
-const db = require("./app/models");
+dotenv.config({ path: "./config/config.env" });
+
+const db = require("./models");
+
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and Resync Db");
+});
 db.sequelize
-  .sync()
+  .authenticate()
   .then(() => {
-    console.log("Synced db.");
+    console.log("Connection has been established successfully.");
   })
   .catch((err) => {
-    console.log("Failed to sync db: " + err.message);
+    console.error("Unable to connect to the database:", err);
   });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+const port = process.env.PORT || 8080;
+const server = app.listen(port, () => {
+  console.log("Server is running on port " + process.env.port);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.log(`Error: ${err.message}`);
+  console.log("Shutting down the server due to unhandled promise rejection");
+  server.close(() => {
+    process.exit(1);
+  });
 });

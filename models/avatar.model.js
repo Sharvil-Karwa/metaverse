@@ -1,13 +1,13 @@
-module.exports = (sequelize, Sequelize) => {
+const avatarSchema = (sequelize, Sequelize) => {
   const Avatar = sequelize.define("avatar", {
     name: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
-    description: {
+    data: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
   });
   return Avatar;
 };
+
+module.exports = avatarSchema;
